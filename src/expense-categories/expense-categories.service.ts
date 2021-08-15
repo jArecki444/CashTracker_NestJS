@@ -17,6 +17,12 @@ export class ExpenseCategoriesService {
     );
   }
 
+  deleteExpenseCategory(id: string): void {
+    this.expenseCategories = this.expenseCategories.filter(
+      (category) => category.id !== id,
+    );
+  }
+
   createExpenseCategory(
     createExpenseCategoryDto: CreateExpenseCategoryDto,
   ): ExpenseCategory {
