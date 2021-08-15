@@ -11,6 +11,12 @@ export class ExpenseCategoriesService {
     return this.expenseCategories;
   }
 
+  getExpenseCategoryById(categoryId: string): ExpenseCategory {
+    return this.expenseCategories.find(
+      (category) => category.id === categoryId,
+    );
+  }
+
   createExpenseCategory(
     createExpenseCategoryDto: CreateExpenseCategoryDto,
   ): ExpenseCategory {

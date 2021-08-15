@@ -1,4 +1,4 @@
-import { Body, Get, Post } from '@nestjs/common';
+import { Body, Get, Param, Post } from '@nestjs/common';
 import { Controller } from '@nestjs/common';
 import { CreateExpenseCategoryDto } from './dto/create-expense-category.dto';
 import { ExpenseCategory } from './expense-categories.model';
@@ -11,6 +11,11 @@ export class ExpenseCategoriesController {
   @Get()
   getAllExpenseCategories(): ExpenseCategory[] {
     return this.expenseService.getExpenseCategories();
+  }
+
+  @Get('/:id')
+  getExpenseCategoryById(@Param('id') id: string): ExpenseCategory {
+    return this.expenseService.getExpenseCategoryById(id);
   }
 
   @Post()
