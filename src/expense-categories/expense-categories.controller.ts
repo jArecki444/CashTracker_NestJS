@@ -1,6 +1,7 @@
-import { Body, Delete, Get, Param, Post } from '@nestjs/common';
+import { Body, Delete, Get, Param, Post, Query } from '@nestjs/common';
 import { Controller } from '@nestjs/common';
 import { CreateExpenseCategoryDto } from './dto/create-expense-category.dto';
+import { FilterExpenseCategoriesDto } from './dto/filter-expense-categories.dto';
 import { ExpenseCategory } from './expense-categories.model';
 import { ExpenseCategoriesService } from './expense-categories.service';
 
@@ -9,8 +10,14 @@ export class ExpenseCategoriesController {
   constructor(private expenseService: ExpenseCategoriesService) {}
 
   @Get()
-  getAllExpenseCategories(): ExpenseCategory[] {
-    return this.expenseService.getExpenseCategories();
+  getExpenseCategories(
+    @Query() filterDto: FilterExpenseCategoriesDto,
+  ): ExpenseCategory[] {
+    if (Object.keys(filterDto).length) {
+      return this.expenseService.filterExpenseCategories(filterDto);
+    } else {
+      return this.expenseService.getAllExpenseCategories();
+    }
   }
 
   @Get('/:id')
