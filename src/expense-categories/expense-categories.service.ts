@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { ExpenseCategory } from './expense-categories.model';
 import { v4 as uuid } from 'uuid';
 import { CreateExpenseCategoryDto } from './dto/create-expense-category.dto';
@@ -28,14 +28,19 @@ export class ExpenseCategoriesService {
   }
 
   getExpenseCategoryById(categoryId: string): ExpenseCategory {
-    return this.expenseCategories.find(
+    const found = this.expenseCategories.find(
       (category) => category.id === categoryId,
     );
+    if (!found) {
+      throw new NotFoundException(`Category with Id ${categoryId} not found`);
+    }
+    return found;
   }
 
   deleteExpenseCategory(id: string): void {
+    const found = this.getExpenseCategoryById(id);
     this.expenseCategories = this.expenseCategories.filter(
-      (category) => category.id !== id,
+      (category) => category.id !== found.id,
     );
   }
 
