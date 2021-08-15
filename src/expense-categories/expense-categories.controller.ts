@@ -1,5 +1,6 @@
 import { Body, Get, Post } from '@nestjs/common';
 import { Controller } from '@nestjs/common';
+import { CreateExpenseCategoryDto } from './dto/create-expense-category.dto';
 import { ExpenseCategory } from './expense-categories.model';
 import { ExpenseCategoriesService } from './expense-categories.service';
 
@@ -14,9 +15,8 @@ export class ExpenseCategoriesController {
 
   @Post()
   createTask(
-    @Body('title') title: string,
-    @Body('description') description: string,
+    @Body() createExpenseCategoryDto: CreateExpenseCategoryDto,
   ): ExpenseCategory {
-    return this.expenseService.createExpenseCategory(title, description);
+    return this.expenseService.createExpenseCategory(createExpenseCategoryDto);
   }
 }

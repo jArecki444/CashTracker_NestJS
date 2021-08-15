@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ExpenseCategory } from './expense-categories.model';
 import { v4 as uuid } from 'uuid';
+import { CreateExpenseCategoryDto } from './dto/create-expense-category.dto';
 
 @Injectable()
 export class ExpenseCategoriesService {
@@ -10,7 +11,10 @@ export class ExpenseCategoriesService {
     return this.expenseCategories;
   }
 
-  createExpenseCategory(title: string, description: string): ExpenseCategory {
+  createExpenseCategory(
+    createExpenseCategoryDto: CreateExpenseCategoryDto,
+  ): ExpenseCategory {
+    const { title, description } = createExpenseCategoryDto;
     const expenseCategory = {
       id: uuid(),
       title,
