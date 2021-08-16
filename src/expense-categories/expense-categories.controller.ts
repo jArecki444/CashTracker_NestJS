@@ -2,38 +2,36 @@ import { Body, Delete, Get, Param, Post, Query } from '@nestjs/common';
 import { Controller } from '@nestjs/common';
 import { CreateExpenseCategoryDto } from './dto/create-expense-category.dto';
 import { FilterExpenseCategoriesDto } from './dto/filter-expense-categories.dto';
-import { ExpenseCategory } from './expense-categories.model';
+import { ExpenseCategory } from './expense-categories.entity';
 import { ExpenseCategoriesService } from './expense-categories.service';
 
 @Controller('expense-categories')
 export class ExpenseCategoriesController {
   constructor(private expenseService: ExpenseCategoriesService) {}
 
-  @Get()
-  getExpenseCategories(
-    @Query() filterDto: FilterExpenseCategoriesDto,
-  ): ExpenseCategory[] {
-    if (Object.keys(filterDto).length) {
-      return this.expenseService.filterExpenseCategories(filterDto);
-    } else {
-      return this.expenseService.getAllExpenseCategories();
-    }
-  }
-
   @Get('/:id')
-  getExpenseCategoryById(@Param('id') id: string): ExpenseCategory {
+  async getExpenseCategoryById(
+    @Param('id') id: string,
+  ): Promise<ExpenseCategory> {
     return this.expenseService.getExpenseCategoryById(id);
   }
 
+  @Get()
+  getExpenseCategories(
+    @Query() filterDto: FilterExpenseCategoriesDto,
+  ): Promise<ExpenseCategory[]> {
+    return this.expenseService.getExpenseCategories(filterDto);
+  }
+
   @Delete('/:id')
-  deleteExpenseCategory(@Param('id') id: string): void {
+  deleteExpenseCategory(@Param('id') id: string): Promise<void> {
     return this.expenseService.deleteExpenseCategory(id);
   }
 
   @Post()
   createTask(
     @Body() createExpenseCategoryDto: CreateExpenseCategoryDto,
-  ): ExpenseCategory {
+  ): Promise<ExpenseCategory> {
     return this.expenseService.createExpenseCategory(createExpenseCategoryDto);
   }
 }

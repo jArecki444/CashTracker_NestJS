@@ -1,59 +1,44 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { ExpenseCategory } from './expense-categories.model';
-import { v4 as uuid } from 'uuid';
 import { CreateExpenseCategoryDto } from './dto/create-expense-category.dto';
 import { FilterExpenseCategoriesDto } from './dto/filter-expense-categories.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { ExpenseCategoriesRepository } from './expense-categories.repository';
+import { ExpenseCategory } from './expense-categories.entity';
 
 @Injectable()
 export class ExpenseCategoriesService {
-  private expenseCategories: ExpenseCategory[] = [];
+  constructor(
+    @InjectRepository(ExpenseCategoriesRepository)
+    private expenseCategoriesRepository: ExpenseCategoriesRepository,
+  ) {}
 
-  getAllExpenseCategories(): ExpenseCategory[] {
-    return this.expenseCategories;
-  }
-  filterExpenseCategories(
+  async getExpenseCategories(
     filterDto: FilterExpenseCategoriesDto,
-  ): ExpenseCategory[] {
-    let expenseCategories: ExpenseCategory[] = [];
-    expenseCategories = this.expenseCategories.filter((category) => {
-      if (
-        category.title.includes(filterDto.search) ||
-        category.description.includes(filterDto.search)
-      ) {
-        return true;
-      }
-      return false;
-    });
-    return expenseCategories;
+  ): Promise<ExpenseCategory[]> {
+    return this.expenseCategoriesRepository.getExpenseCategories(filterDto);
   }
 
-  getExpenseCategoryById(categoryId: string): ExpenseCategory {
-    const found = this.expenseCategories.find(
-      (category) => category.id === categoryId,
-    );
+  async getExpenseCategoryById(categoryId: string): Promise<ExpenseCategory> {
+    const found = await this.expenseCategoriesRepository.findOne(categoryId);
+
     if (!found) {
       throw new NotFoundException(`Category with Id ${categoryId} not found`);
     }
+
     return found;
   }
-
-  deleteExpenseCategory(id: string): void {
-    const found = this.getExpenseCategoryById(id);
-    this.expenseCategories = this.expenseCategories.filter(
-      (category) => category.id !== found.id,
+  createExpenseCategory(
+    createExpenseCategoryDto: CreateExpenseCategoryDto,
+  ): Promise<ExpenseCategory> {
+    return this.expenseCategoriesRepository.createExpenseCategory(
+      createExpenseCategoryDto,
     );
   }
 
-  createExpenseCategory(
-    createExpenseCategoryDto: CreateExpenseCategoryDto,
-  ): ExpenseCategory {
-    const { title, description } = createExpenseCategoryDto;
-    const expenseCategory = {
-      id: uuid(),
-      title,
-      description,
-    };
-    this.expenseCategories.push(expenseCategory);
-    return expenseCategory;
+  async deleteExpenseCategory(id: string): Promise<void> {
+    const result = await this.expenseCategoriesRepository.delete(id);
+    if (result.affected === 0) {
+      throw new NotFoundException(`Category with id ${id} not found!`);
+    }
   }
 }
