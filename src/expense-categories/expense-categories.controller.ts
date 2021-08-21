@@ -1,11 +1,21 @@
-import { Body, Delete, Get, Param, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { Controller } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { CreateExpenseCategoryDto } from './dto/create-expense-category.dto';
 import { FilterExpenseCategoriesDto } from './dto/filter-expense-categories.dto';
 import { ExpenseCategory } from './expense-categories.entity';
 import { ExpenseCategoriesService } from './expense-categories.service';
 
 @Controller('expense-categories')
+@UseGuards(AuthGuard())
 export class ExpenseCategoriesController {
   constructor(private expenseService: ExpenseCategoriesService) {}
 
