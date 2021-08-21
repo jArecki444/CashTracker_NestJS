@@ -9,6 +9,8 @@ import {
 } from '@nestjs/common';
 import { Controller } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { GetUser } from 'src/auth/get-user.decorator';
+import { User } from 'src/auth/user.entity';
 import { CreateExpenseCategoryDto } from './dto/create-expense-category.dto';
 import { FilterExpenseCategoriesDto } from './dto/filter-expense-categories.dto';
 import { ExpenseCategory } from './expense-categories.entity';
@@ -39,9 +41,13 @@ export class ExpenseCategoriesController {
   }
 
   @Post()
-  createTask(
+  createExpenseCategory(
     @Body() createExpenseCategoryDto: CreateExpenseCategoryDto,
+    @GetUser() user: User,
   ): Promise<ExpenseCategory> {
-    return this.expenseService.createExpenseCategory(createExpenseCategoryDto);
+    return this.expenseService.createExpenseCategory(
+      createExpenseCategoryDto,
+      user,
+    );
   }
 }

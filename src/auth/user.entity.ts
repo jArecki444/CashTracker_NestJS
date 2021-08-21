@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { ExpenseCategory } from 'src/expense-categories/expense-categories.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class User {
@@ -10,4 +11,7 @@ export class User {
 
   @Column()
   password: string;
+
+  @OneToMany((_type) => ExpenseCategory, (task) => task.user, { eager: true })
+  expenseCategories: ExpenseCategory[];
 }

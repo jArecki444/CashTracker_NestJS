@@ -1,3 +1,4 @@
+import { User } from 'src/auth/user.entity';
 import { EntityRepository, Repository } from 'typeorm';
 import { CreateExpenseCategoryDto } from './dto/create-expense-category.dto';
 import { FilterExpenseCategoriesDto } from './dto/filter-expense-categories.dto';
@@ -25,11 +26,13 @@ export class ExpenseCategoriesRepository extends Repository<ExpenseCategory> {
 
   async createExpenseCategory(
     createExpenseCategoryDto: CreateExpenseCategoryDto,
+    user: User,
   ): Promise<ExpenseCategory> {
     const { title, description } = createExpenseCategoryDto;
     const expenseCategory = this.create({
       title,
       description,
+      user,
     });
     await this.save(expenseCategory);
     return expenseCategory;

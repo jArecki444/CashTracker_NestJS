@@ -4,6 +4,7 @@ import { FilterExpenseCategoriesDto } from './dto/filter-expense-categories.dto'
 import { InjectRepository } from '@nestjs/typeorm';
 import { ExpenseCategoriesRepository } from './expense-categories.repository';
 import { ExpenseCategory } from './expense-categories.entity';
+import { User } from 'src/auth/user.entity';
 
 @Injectable()
 export class ExpenseCategoriesService {
@@ -29,9 +30,11 @@ export class ExpenseCategoriesService {
   }
   createExpenseCategory(
     createExpenseCategoryDto: CreateExpenseCategoryDto,
+    user: User,
   ): Promise<ExpenseCategory> {
     return this.expenseCategoriesRepository.createExpenseCategory(
       createExpenseCategoryDto,
+      user,
     );
   }
 
