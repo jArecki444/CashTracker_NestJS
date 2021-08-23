@@ -8,14 +8,16 @@ import { ExpenseCategory } from './expense-categories.entity';
 export class ExpenseCategoriesRepository extends Repository<ExpenseCategory> {
   async getExpenseCategories(
     filterDto: FilterExpenseCategoriesDto,
+    user: User,
   ): Promise<ExpenseCategory[]> {
     const { search } = filterDto;
 
     const query = this.createQueryBuilder('expenseCategory');
+    query.where({ user });
 
     if (search) {
       query.andWhere(
-        'LOWER(expenseCategory.title) LIKE LOWER(:search) OR LOWER(expenseCategory.description) LIKE LOWER(:search)',
+        '(LOWER(expenseCategory.title) LIKE LOWER(:search) OR LOWER(expenseCategory.description) LIKE LOWER(:search))',
         { search: `%${search}%` },
       );
     }

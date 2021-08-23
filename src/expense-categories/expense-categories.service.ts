@@ -15,12 +15,21 @@ export class ExpenseCategoriesService {
 
   async getExpenseCategories(
     filterDto: FilterExpenseCategoriesDto,
+    user: User,
   ): Promise<ExpenseCategory[]> {
-    return this.expenseCategoriesRepository.getExpenseCategories(filterDto);
+    return this.expenseCategoriesRepository.getExpenseCategories(
+      filterDto,
+      user,
+    );
   }
 
-  async getExpenseCategoryById(categoryId: string): Promise<ExpenseCategory> {
-    const found = await this.expenseCategoriesRepository.findOne(categoryId);
+  async getExpenseCategoryById(
+    categoryId: string,
+    user: User,
+  ): Promise<ExpenseCategory> {
+    const found = await this.expenseCategoriesRepository.findOne({
+      where: { id: categoryId, user },
+    });
 
     if (!found) {
       throw new NotFoundException(`Category with Id ${categoryId} not found`);
@@ -38,8 +47,8 @@ export class ExpenseCategoriesService {
     );
   }
 
-  async deleteExpenseCategory(id: string): Promise<void> {
-    const result = await this.expenseCategoriesRepository.delete(id);
+  async deleteExpenseCategory(id: string, user: User): Promise<void> {
+    const result = await this.expenseCategoriesRepository.delete({ id, user });
     if (result.affected === 0) {
       throw new NotFoundException(`Category with id ${id} not found!`);
     }

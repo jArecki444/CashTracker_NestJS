@@ -24,20 +24,25 @@ export class ExpenseCategoriesController {
   @Get('/:id')
   async getExpenseCategoryById(
     @Param('id') id: string,
+    @GetUser() user: User,
   ): Promise<ExpenseCategory> {
-    return this.expenseService.getExpenseCategoryById(id);
+    return this.expenseService.getExpenseCategoryById(id, user);
   }
 
   @Get()
   getExpenseCategories(
     @Query() filterDto: FilterExpenseCategoriesDto,
+    @GetUser() user: User,
   ): Promise<ExpenseCategory[]> {
-    return this.expenseService.getExpenseCategories(filterDto);
+    return this.expenseService.getExpenseCategories(filterDto, user);
   }
 
   @Delete('/:id')
-  deleteExpenseCategory(@Param('id') id: string): Promise<void> {
-    return this.expenseService.deleteExpenseCategory(id);
+  deleteExpenseCategory(
+    @Param('id') id: string,
+    @GetUser() user: User,
+  ): Promise<void> {
+    return this.expenseService.deleteExpenseCategory(id, user);
   }
 
   @Post()
