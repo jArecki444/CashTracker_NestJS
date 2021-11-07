@@ -20,21 +20,18 @@ export class Entry {
   expenses: Expense[];
 
   @ManyToOne((_type) => User, (user) => user.id, {
-    eager: false,
+    eager: true,
   })
-  // @Exclude({ toPlainOnly: true }) //Do not return all user data when we fetch Entry
   payer: User;
 
   @ManyToOne((_type) => User, (user) => user.id, {
-    eager: false,
+    eager: true,
   })
-  // @Exclude({ toPlainOnly: true })
   createdBy: User;
 
   @ManyToOne((_type) => User, (user) => user.id, {
-    eager: false,
+    eager: true,
   })
-  // @Exclude({ toPlainOnly: true })
   partner: User;
 
   @Column()

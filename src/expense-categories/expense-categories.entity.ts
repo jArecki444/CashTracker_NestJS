@@ -17,7 +17,7 @@ export class ExpenseCategory {
   @ManyToOne((_type) => User, (user) => user.expenseCategories, {
     eager: false,
   })
-  // @Exclude({ toPlainOnly: true })
+  @Exclude({ toPlainOnly: true })
   user: User;
 
   @OneToMany((_type) => Expense, (expense) => expense.expenseCategory, {

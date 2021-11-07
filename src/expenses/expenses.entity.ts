@@ -16,20 +16,19 @@ export class Expense {
       eager: true,
     },
   )
-  // @Exclude({ toPlainOnly: true })
   expenseCategory: ExpenseCategory;
 
   @ManyToOne((_type) => User, (user) => user.expenses, {
-    eager: true,
+    eager: false,
   })
-  // @Exclude({ toPlainOnly: true })
+  @Exclude({ toPlainOnly: true })
   owner: User;
 
   @ManyToOne((_type) => Entry, (entry) => entry.expenses, {
     eager: false,
   })
-  // @Exclude({ toPlainOnly: true })
-  entry: Entry;
+  @Exclude({ toPlainOnly: true })
+  entry: Entry; //TODO: Check if this relation is valid
 
   @Column()
   price: number;

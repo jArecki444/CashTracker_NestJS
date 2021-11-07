@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import { Entry } from 'src/entries/entries.entity';
 import { ExpenseCategory } from 'src/expense-categories/expense-categories.entity';
 import { Expense } from 'src/expenses/expenses.entity';
@@ -15,6 +16,7 @@ export class User {
   // email: string;
 
   @Column()
+  @Exclude({ toPlainOnly: true })
   password: string;
 
   // @Column("text", { array: true })
@@ -23,7 +25,7 @@ export class User {
   @OneToMany(
     (_type) => ExpenseCategory,
     (expenseCategory) => expenseCategory.user,
-    { eager: true },
+    { eager: false },
   )
   expenseCategories: ExpenseCategory[];
 
