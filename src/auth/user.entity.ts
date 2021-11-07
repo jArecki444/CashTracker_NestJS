@@ -9,11 +9,11 @@ export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ unique: true })
-  username: string;
+  // @Column({ unique: true })
+  // username: string;
 
-  // @Column()
-  // email: string;
+  @Column({ unique: true })
+  email: string;
 
   @Column()
   @Exclude({ toPlainOnly: true })
@@ -31,9 +31,7 @@ export class User {
 
   @OneToMany((_type) => Entry, (entry) => entry.createdBy, { eager: false })
   entries: Entry[];
-  //TODO: Probably we need to use Exclude and eager false here
 
   @OneToMany((_type) => Expense, (expense) => expense.owner, { eager: false })
   expenses: Expense[];
-  //TODO: Probably we need to use Exclude and eager false here
 }

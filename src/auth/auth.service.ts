@@ -26,18 +26,19 @@ export class AuthService {
 
   async signIn(
     authCredentialsDto: AuthCredentialsDto,
-  ): Promise<{ accessToken: string }> {
-    const { username, password } = authCredentialsDto;
+  ): Promise<{ accessToken: string, userId: string }> {
+    const { email, password } = authCredentialsDto;
 
-    const existingUser = await this.usersRepository.findOne({ username });
+    const existingUser: User = await this.usersRepository.findOne({ email });
+    const userId = existingUser.id;
 
     if (
       existingUser &&
       (await bcrypt.compare(password, existingUser.password))
     ) {
-      const payload: JwtPayload = { username };
+      const payload: JwtPayload = { email };
       const accessToken: string = await this.jwtService.sign(payload);
-      return { accessToken };
+      return { accessToken, userId };
     } else {
       throw new UnauthorizedException('Invalid username or password');
     }
