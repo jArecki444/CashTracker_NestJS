@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ExpenseCategoriesModule } from './expense-categories/expense-categories.module';
 import { AuthModule } from './auth/auth.module';
+import { ExpensesModule } from './expenses/expenses.module';
+import { EntriesModule } from './entries/entries.module';
 
 @Module({
   imports: [
@@ -17,6 +19,8 @@ import { AuthModule } from './auth/auth.module';
       synchronize: true,
     }),
     ExpenseCategoriesModule,
+    ExpensesModule,
+    EntriesModule,
     AuthModule,
   ],
   controllers: [],

@@ -6,6 +6,7 @@ import * as bcrypt from 'bcrypt';
 import { UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from './jwt-payload.interface';
+import { User } from './user.entity';
 
 @Injectable()
 export class AuthService {
@@ -17,6 +18,10 @@ export class AuthService {
 
   async signUp(authCredentialsDto: AuthCredentialsDto): Promise<void> {
     return this.usersRepository.createUser(authCredentialsDto);
+  }
+
+  async getUserInfo(user: User): Promise<User> {
+    return user;
   }
 
   async signIn(

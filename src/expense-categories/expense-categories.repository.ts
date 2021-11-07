@@ -6,6 +6,7 @@ import { ExpenseCategory } from './expense-categories.entity';
 
 @EntityRepository(ExpenseCategory)
 export class ExpenseCategoriesRepository extends Repository<ExpenseCategory> {
+
   async getExpenseCategories(
     filterDto: FilterExpenseCategoriesDto,
     user: User,
