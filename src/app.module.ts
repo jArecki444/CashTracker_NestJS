@@ -4,6 +4,7 @@ import { ExpenseCategoriesModule } from './expense-categories/expense-categories
 import { AuthModule } from './auth/auth.module';
 import { ExpensesModule } from './expenses/expenses.module';
 import { EntriesModule } from './entries/entries.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { EntriesModule } from './entries/entries.module';
     ExpensesModule,
     EntriesModule,
     AuthModule,
+    MailModule,
   ],
   controllers: [],
   providers: [],

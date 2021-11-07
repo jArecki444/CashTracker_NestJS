@@ -1,10 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { create } from 'domain';
 import { User } from 'src/auth/user.entity';
 import { UsersRepository } from 'src/auth/users.repository';
 import { Expense } from 'src/expenses/expenses.entity';
 import { ExpensesRepository } from 'src/expenses/expenses.repository';
+import { MailService } from 'src/mail/mail.service';
+import { newEntryAddedEmailTemplate } from 'src/mail/template/new-entry-added';
 import { In } from 'typeorm';
 import { CreateEntryDto } from './dto/create-entry.dto';
 import { Entry } from './entries.entity';
@@ -19,6 +21,7 @@ export class EntriesService {
     private usersRepository: UsersRepository,
     @InjectRepository(ExpensesRepository)
     private expensesRepository: ExpensesRepository,
+    @Inject(MailService) private mailService: MailService,
   ) {}
 
   async getEntries(user: User): Promise<Entry[]> {
@@ -74,6 +77,15 @@ export class EntriesService {
         `Partner with id: ${createEntryDto.partnerId} not found!`,
       );
     }
+
+    await this.mailService.sendMail(
+      user.email,
+      'New entry has been added!',
+      newEntryAddedEmailTemplate(
+        createEntryDto.totalAmount,
+        createEntryDto.partnerAmount,
+      ),
+    );
 
     return this.entriesRepository.createEntry(
       createEntryDto,
