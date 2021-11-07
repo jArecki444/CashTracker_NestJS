@@ -13,11 +13,11 @@ export class Expense {
     (_type) => ExpenseCategory,
     (expenseCategory) => expenseCategory,
     {
-      eager: false,
+      eager: true,
     },
   )
   // @Exclude({ toPlainOnly: true })
-  expenseCategory: ExpenseCategory; //TODO: Do we need this relation???
+  expenseCategory: ExpenseCategory;
 
   @ManyToOne((_type) => User, (user) => user.expenses, {
     eager: true,

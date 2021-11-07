@@ -20,8 +20,8 @@ export class ExpenseCategory {
   // @Exclude({ toPlainOnly: true })
   user: User;
 
-  // @OneToMany((_type) => Expense, (expense) => expense.expenseCategory, {
-  //   eager: true,
-  // })
-  // expenses: Expense[];
+  @OneToMany((_type) => Expense, (expense) => expense.expenseCategory, {
+    eager: false,
+  })
+  expenses: Expense[];
 }
