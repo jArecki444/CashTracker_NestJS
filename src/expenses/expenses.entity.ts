@@ -35,6 +35,9 @@ export class Expense {
 
   @Column()
   whim: boolean;
+    
+  @Column({nullable: true})
+  additionalNote: string;
 
   @CreateDateColumn()
   date: Date;

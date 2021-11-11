@@ -27,4 +27,6 @@ export class CreateEntryDto {
 
   @IsNotEmpty()
   partnerAmount: number;
+
+  additionalNote?: string;
 }

@@ -21,9 +21,7 @@ export class ExpensesController {
   constructor(private expenseService: ExpensesService) {}
 
   @Get('/:id')
-  async getExpenseById(
-    @Param('id') id: string,
-  ): Promise<Expense> {
+  async getExpenseById(@Param('id') id: string): Promise<Expense> {
     return this.expenseService.getExpenseById(id);
   }
 

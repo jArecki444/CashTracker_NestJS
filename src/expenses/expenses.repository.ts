@@ -21,12 +21,13 @@ export class ExpensesRepository extends Repository<Expense> {
     expenseCategory: ExpenseCategory
 
   ): Promise<Expense> {
-    const {price, whim} = createExpenseDto;
+    const {price, whim, additionalNote} = createExpenseDto;
     const expense = this.create({
       owner,
       expenseCategory,
       price,
-      whim
+      whim,
+      additionalNote
     });
     await this.save(expense);
     return expense;

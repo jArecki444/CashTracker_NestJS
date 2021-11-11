@@ -12,4 +12,6 @@ export class CreateExpenseDto {
 
   @IsNotEmpty()
   whim: boolean;
+
+  additionalNote?: string | null;
 }

@@ -40,6 +40,9 @@ export class Entry {
   @Column()
   partnerAmount: number;
 
+  @Column({nullable: true})
+  additionalNote: string;
+
   @CreateDateColumn()
   date: Date;
 }

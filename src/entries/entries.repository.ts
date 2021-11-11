@@ -21,7 +21,7 @@ export class EntriesRepository extends Repository<Entry> {
     partner: User,
     createdBy: User,
   ): Promise<Entry> {
-    const { totalAmount, partnerAmount } = createEntryDto;
+    const { totalAmount, partnerAmount, additionalNote } = createEntryDto;
 
     const entry = this.create({
       expenses,
@@ -30,6 +30,7 @@ export class EntriesRepository extends Repository<Entry> {
       createdBy,
       totalAmount,
       partnerAmount,
+      additionalNote
     });
 
     await this.save(entry);
