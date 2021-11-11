@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import { ExpensesModule } from './expenses/expenses.module';
 import { EntriesModule } from './entries/entries.module';
 import { MailModule } from './mail/mail.module';
+import { FriendInvitationsModule } from './friend-invitations/friend-invitations.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { MailModule } from './mail/mail.module';
     EntriesModule,
     AuthModule,
     MailModule,
+    FriendInvitationsModule
   ],
   controllers: [],
   providers: [],
