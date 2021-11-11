@@ -7,7 +7,10 @@ import { InvitationStatus } from './models/invitation-status.enum';
 export class FriendInvitationsRepository extends Repository<Invitation> {
   async getAllReceivedInvitations(user: User): Promise<Invitation[]> {
     const query = this.createQueryBuilder('invitation');
-    query.where({ inviteTo: user, status: InvitationStatus.PENDING });
+    query
+      .where({ inviteTo: user, status: InvitationStatus.PENDING })
+      .select(['invitation.date', 'invitation.status', 'invitation.id'])
+      .leftJoinAndSelect('invitation.inviteFrom', 'username');
 
     const invitations = await query.getMany();
     return invitations;
