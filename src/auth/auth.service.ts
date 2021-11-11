@@ -1,12 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AuthCredentialsDto } from './dto/auth.credentials.dto';
 import { UsersRepository } from './users.repository';
 import * as bcrypt from 'bcrypt';
 import { UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from './jwt-payload.interface';
 import { User } from './user.entity';
+import { LoggedUserInfoDto } from './dto/logged.userInfo.dto';
+import { SignUpDto } from './dto/signUp.dto';
+import { SignInDto } from './dto/signIn.dto';
 
 @Injectable()
 export class AuthService {
@@ -16,7 +18,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async signUp(authCredentialsDto: AuthCredentialsDto): Promise<void> {
+  async signUp(authCredentialsDto: SignUpDto): Promise<void> {
     return this.usersRepository.createUser(authCredentialsDto);
   }
 
@@ -24,13 +26,11 @@ export class AuthService {
     return user;
   }
 
-  async signIn(
-    authCredentialsDto: AuthCredentialsDto,
-  ): Promise<{ accessToken: string, userId: string }> {
+  async signIn(authCredentialsDto: SignInDto): Promise<LoggedUserInfoDto> {
     const { email, password } = authCredentialsDto;
 
     const existingUser: User = await this.usersRepository.findOne({ email });
-    const userId = existingUser.id;
+    const { username, id } = existingUser;
 
     if (
       existingUser &&
@@ -38,7 +38,13 @@ export class AuthService {
     ) {
       const payload: JwtPayload = { email };
       const accessToken: string = await this.jwtService.sign(payload);
-      return { accessToken, userId };
+      const loggedUserInfo: LoggedUserInfoDto = {
+        username,
+        email,
+        accessToken,
+        id,
+      };
+      return loggedUserInfo;
     } else {
       throw new UnauthorizedException('Invalid username or password');
     }
