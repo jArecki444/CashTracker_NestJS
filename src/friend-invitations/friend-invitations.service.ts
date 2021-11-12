@@ -1,7 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FriendInvitationsRepository } from './friend-invitations.repository';
 import { User } from 'src/auth/user.entity';
@@ -76,5 +73,37 @@ export class FriendInvitationsService {
   }
   async getAllInvitations(user: User): Promise<Invitation[]> {
     return this.friendInvitationsRepository.getAllInvitations(user);
+  }
+  async getAvailableUsersToInvite(requestingUser: User): Promise<any> {
+    let availableToInvite = [];
+    const requestingUserId = requestingUser.id;
+    //Get all users
+    //Get user friends
+    //Return users - friends
+    const allUserWithDetails = await this.usersRepository.find();
+    const allUsers = allUserWithDetails.map((item) => ({
+      username: item.username,
+      email: item.email,
+      id: item.id,
+    }));
+
+    const userFriendsWithDetails = await this.usersRepository.getUserFriends(
+      requestingUserId,
+    );
+
+    if (userFriendsWithDetails.length > 0) {
+      const userFriendsIds = userFriendsWithDetails.map((item) => item.id);
+      availableToInvite = allUsers.filter(
+        (user) => !userFriendsIds.includes(user.id),
+      );
+    } else {
+      availableToInvite = allUsers;
+    }
+
+    availableToInvite = availableToInvite.filter(
+      (user) => user.id !== requestingUserId,
+    );
+
+    return availableToInvite;
   }
 }

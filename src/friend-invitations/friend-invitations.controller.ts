@@ -23,6 +23,13 @@ export class FriendInvitationsController {
     return this.friendInvitationsService.getAllInvitations(user);
   }
 
+  @Get('/available-to-invite')
+  availableToInvite(
+    @GetUser() user: User,
+  ): Promise<[{ username: string; email: string; id: string }]> {
+    return this.friendInvitationsService.getAvailableUsersToInvite(user);
+  }
+
   @Get('/:id')
   async getInvitationId(
     @Param('id') id: string,
