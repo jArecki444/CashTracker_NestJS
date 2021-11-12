@@ -23,7 +23,11 @@ export class AuthService {
   }
 
   async getUserInfo(user: User): Promise<User> {
-    return user;
+    return await this.usersRepository.findOne(user);
+  }
+
+  async getFriends(id: string): Promise<User[]> {
+    return this.usersRepository.getUserFriends(id);
   }
 
   async signIn(authCredentialsDto: SignInDto): Promise<LoggedUserInfoDto> {

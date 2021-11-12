@@ -27,4 +27,30 @@ export class UsersRepository extends Repository<User> {
       }
     }
   }
+
+  async addFriend(inviteFrom: User, inviteTo: User): Promise<void> {
+    const userToUpdate = inviteTo;
+
+    //Set already existing friends
+    userToUpdate.friends = await this.getUserFriends(userToUpdate.id);
+
+    userToUpdate.friends.push(inviteFrom);
+
+    await this.save(userToUpdate);
+  }
+
+  async getUserFriends(userId: string): Promise<User[]> {
+    return await this.query(
+      ` SELECT username,email,id
+      FROM "user" U
+      WHERE U.id <> $1
+        AND EXISTS(
+          SELECT 1
+          FROM user_friends_user F
+          WHERE (F."userId_1" = $1 AND F."userId_2" = U.id )
+          OR (F."userId_2" = $1 AND F."userId_1" = U.id )
+          );  `,
+      [userId],
+    );
+  }
 }

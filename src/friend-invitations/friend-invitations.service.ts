@@ -1,4 +1,7 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FriendInvitationsRepository } from './friend-invitations.repository';
 import { User } from 'src/auth/user.entity';
@@ -42,6 +45,13 @@ export class FriendInvitationsService {
     user: User,
   ): Promise<Invitation> {
     const invitation: Invitation = await this.getInvitationById(id, user);
+
+    if (newInvitationStatus === InvitationStatus.ACCEPTED) {
+      await this.usersRepository.addFriend(
+        invitation.inviteFrom,
+        invitation.inviteTo,
+      );
+    }
 
     return this.friendInvitationsRepository.updateInvitationStatus(
       invitation,

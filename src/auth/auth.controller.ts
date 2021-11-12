@@ -1,4 +1,4 @@
-import { Body, Get, Post } from '@nestjs/common';
+import { Body, Get, Param, Post } from '@nestjs/common';
 import { Controller } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoggedUserInfoDto } from './dto/logged.userInfo.dto';
@@ -17,13 +17,17 @@ export class AuthController {
   }
 
   @Post('/signin')
-  signIn(
-    @Body() authCredentialsDto: SignInDto,
-  ): Promise<LoggedUserInfoDto> {
+  signIn(@Body() authCredentialsDto: SignInDto): Promise<LoggedUserInfoDto> {
     return this.authService.signIn(authCredentialsDto);
   }
+
   @Get('/info')
   info(@GetUser() user: User): Promise<User> {
     return this.authService.getUserInfo(user);
+  }
+
+  @Get('/friends/:userId')
+  friends(@Param('userId') id: string): Promise<User[]> {
+    return this.authService.getFriends(id);
   }
 }
