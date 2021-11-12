@@ -6,6 +6,7 @@ import { Invitation } from './friend-invitations.entity';
 import { InviteFriendDto } from './dto/invite-friend.dto';
 import { UsersRepository } from 'src/auth/users.repository';
 import { InvitationStatus } from './models/invitation-status.enum';
+import { GetAvailableUsersDto } from './dto/get-available-users.dto';
 
 @Injectable()
 export class FriendInvitationsService {
@@ -74,7 +75,11 @@ export class FriendInvitationsService {
   async getAllInvitations(user: User): Promise<Invitation[]> {
     return this.friendInvitationsRepository.getAllInvitations(user);
   }
-  async getAvailableUsersToInvite(requestingUser: User): Promise<any> {
+
+  async getAvailableUsersToInvite(
+    requestingUser: User,
+    filterDto: GetAvailableUsersDto,
+  ): Promise<any> {
     let availableToInvite = [];
     const requestingUserId = requestingUser.id;
     //Get all users
@@ -103,6 +108,13 @@ export class FriendInvitationsService {
     availableToInvite = availableToInvite.filter(
       (user) => user.id !== requestingUserId,
     );
+
+    const { search } = filterDto;
+    if (search.length) {
+      availableToInvite = availableToInvite.filter((user) =>
+        user.username.toLowerCase().includes(search.toLowerCase()),
+      );
+    }
 
     return availableToInvite;
   }
