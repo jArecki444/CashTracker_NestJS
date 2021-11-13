@@ -21,6 +21,26 @@ import { ExpenseCategoriesService } from './expense-categories.service';
 export class ExpenseCategoriesController {
   constructor(private expenseService: ExpenseCategoriesService) {}
 
+  @Get('/my-categories')
+  getMyExpenseCategories(
+    @GetUser() user: User,
+    @Query() filterDto: FilterExpenseCategoriesDto,
+  ): Promise<ExpenseCategory[]> {
+    return this.expenseService.getMyExpenseCategories(filterDto, user);
+  }
+
+  @Get('/cooperative-categories')
+  getCooperativeCategories(
+    @Query() filterDto: FilterExpenseCategoriesDto,
+    @GetUser() user: User,
+  ): Promise<ExpenseCategory[]> {
+    console.log('received parter id', filterDto.partnerId);
+    return this.expenseService.getCooperativeCategories(
+      filterDto,
+      user
+    );
+  }
+
   @Get('/:id')
   async getExpenseCategoryById(
     @Param('id') id: string,
@@ -28,15 +48,6 @@ export class ExpenseCategoriesController {
   ): Promise<ExpenseCategory> {
     return this.expenseService.getExpenseCategoryById(id, user);
   }
-
-  @Get()
-  getExpenseCategories(
-    @Query() filterDto: FilterExpenseCategoriesDto,
-    @GetUser() user: User,
-  ): Promise<ExpenseCategory[]> {
-    return this.expenseService.getExpenseCategories(filterDto, user);
-  }
-
   @Delete('/:id')
   deleteExpenseCategory(
     @Param('id') id: string,

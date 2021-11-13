@@ -6,8 +6,7 @@ import { ExpenseCategory } from './expense-categories.entity';
 
 @EntityRepository(ExpenseCategory)
 export class ExpenseCategoriesRepository extends Repository<ExpenseCategory> {
-
-  async getExpenseCategories(
+  async getMyExpenseCategories(
     filterDto: FilterExpenseCategoriesDto,
     user: User,
   ): Promise<ExpenseCategory[]> {
@@ -24,6 +23,31 @@ export class ExpenseCategoriesRepository extends Repository<ExpenseCategory> {
     }
 
     const expenseCategories = await query.getMany();
+    return expenseCategories;
+  }
+
+  async getCooperativeCategories(
+    filterDto: FilterExpenseCategoriesDto,
+    user: User,
+    partner: User,
+  ): Promise<ExpenseCategory[]> {
+    const { search } = filterDto;
+
+    const query = this.createQueryBuilder('expenseCategory');
+    console.log('partner to query', partner);
+    query.where({ user: user }).orWhere({ user: partner });
+    let expenseCategories = await query.getMany();
+
+    if (search) {
+      // query.andWhere(
+      //   '(LOWER(expenseCategory.title) LIKE LOWER(:search) OR LOWER(expenseCategory.description) LIKE LOWER(:search))',
+      //   { search: `%${search}%` },
+      // );
+      expenseCategories = expenseCategories.filter((expenseCategory) =>
+        expenseCategory.title.toLowerCase().includes(search.toLowerCase()),
+      );
+    }
+
     return expenseCategories;
   }
 

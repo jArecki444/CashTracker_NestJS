@@ -5,21 +5,39 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ExpenseCategoriesRepository } from './expense-categories.repository';
 import { ExpenseCategory } from './expense-categories.entity';
 import { User } from 'src/auth/user.entity';
+import { UsersRepository } from 'src/auth/users.repository';
 
 @Injectable()
 export class ExpenseCategoriesService {
   constructor(
     @InjectRepository(ExpenseCategoriesRepository)
     private expenseCategoriesRepository: ExpenseCategoriesRepository,
+    @InjectRepository(UsersRepository)
+    private usersRepository: UsersRepository,
   ) {}
 
-  async getExpenseCategories(
+  async getMyExpenseCategories(
     filterDto: FilterExpenseCategoriesDto,
     user: User,
   ): Promise<ExpenseCategory[]> {
-    return this.expenseCategoriesRepository.getExpenseCategories(
+    return await this.expenseCategoriesRepository.getMyExpenseCategories(
       filterDto,
       user,
+    );
+  }
+
+  async getCooperativeCategories(
+    filterDto: FilterExpenseCategoriesDto,
+    user: User,
+  ): Promise<ExpenseCategory[]> {
+    const partnerId = filterDto.partnerId;
+    const partner = await this.usersRepository.findOne({
+      where: { id: partnerId },
+    });
+    return this.expenseCategoriesRepository.getCooperativeCategories(
+      filterDto,
+      user,
+      partner,
     );
   }
 
