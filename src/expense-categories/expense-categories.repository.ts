@@ -6,6 +6,22 @@ import { ExpenseCategory } from './expense-categories.entity';
 
 @EntityRepository(ExpenseCategory)
 export class ExpenseCategoriesRepository extends Repository<ExpenseCategory> {
+  async getAllExpenseCategories(
+    filterDto: FilterExpenseCategoriesDto,
+  ): Promise<ExpenseCategory[]> {
+    const { search } = filterDto;
+
+    let expenseCategories = await this.find();
+
+    if (search) {
+      expenseCategories = expenseCategories.filter((expenseCategory) =>
+        expenseCategory.title.toLowerCase().includes(search.toLowerCase()),
+      );
+    }
+
+    return expenseCategories;
+  }
+
   async getMyExpenseCategories(
     filterDto: FilterExpenseCategoriesDto,
     user: User,

@@ -21,6 +21,13 @@ import { ExpenseCategoriesService } from './expense-categories.service';
 export class ExpenseCategoriesController {
   constructor(private expenseService: ExpenseCategoriesService) {}
 
+  @Get()
+  getAllExpenseCategories(
+    @Query() filterDto: FilterExpenseCategoriesDto,
+  ): Promise<ExpenseCategory[]> {
+    return this.expenseService.getAllExpenseCategories(filterDto);
+  }
+
   @Get('/my-categories')
   getMyExpenseCategories(
     @GetUser() user: User,

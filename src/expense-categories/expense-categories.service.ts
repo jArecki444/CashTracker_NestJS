@@ -25,6 +25,13 @@ export class ExpenseCategoriesService {
       user,
     );
   }
+  async getAllExpenseCategories(
+    filterDto: FilterExpenseCategoriesDto,
+  ): Promise<ExpenseCategory[]> {
+    return await this.expenseCategoriesRepository.getAllExpenseCategories(
+      filterDto,
+    );
+  }
 
   async getCooperativeCategories(
     filterDto: FilterExpenseCategoriesDto,
