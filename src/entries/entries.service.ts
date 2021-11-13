@@ -11,6 +11,7 @@ import { In } from 'typeorm';
 import { CreateEntryDto } from './dto/create-entry.dto';
 import { Entry } from './entries.entity';
 import { EntriesRepository } from './entries.repository';
+import { EntryStatus } from './models/entry.status.enum';
 
 @Injectable()
 export class EntriesService {
@@ -38,6 +39,18 @@ export class EntriesService {
     }
 
     return found;
+  }
+
+  async updateEntryStatus(
+    id: string,
+    newEntryStatus: EntryStatus,
+  ): Promise<Entry> {
+    const entry: Entry = await this.getEntryById(id);
+
+    return this.entriesRepository.updateEntryStatus(
+      entry,
+      newEntryStatus,
+    );
   }
 
   async createEntry(

@@ -3,6 +3,7 @@ import { Expense } from 'src/expenses/expenses.entity';
 import { EntityRepository, Repository } from 'typeorm';
 import { CreateEntryDto } from './dto/create-entry.dto';
 import { Entry } from './entries.entity';
+import { EntryStatus } from './models/entry.status.enum';
 
 @EntityRepository(Entry)
 export class EntriesRepository extends Repository<Entry> {
@@ -30,10 +31,22 @@ export class EntriesRepository extends Repository<Entry> {
       createdBy,
       totalAmount,
       partnerAmount,
-      additionalNote
+      additionalNote,
+      status: EntryStatus.AWAITING_CONFIRMATION,
     });
 
     await this.save(entry);
     return entry;
+  }
+
+  async updateEntryStatus(
+    entry: Entry,
+    newStatus: EntryStatus,
+  ): Promise<Entry> {
+    const entryToUpdate: Entry = entry;
+    entryToUpdate.status = newStatus;
+
+    await this.save(entryToUpdate);
+    return entryToUpdate;
   }
 }

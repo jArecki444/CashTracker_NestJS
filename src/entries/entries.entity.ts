@@ -9,6 +9,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { EntryStatus } from './models/entry.status.enum';
 
 @Entity()
 export class Entry {
@@ -42,6 +43,9 @@ export class Entry {
 
   @Column({nullable: true})
   additionalNote: string;
+
+  @Column()
+  status: EntryStatus;
 
   @CreateDateColumn()
   date: Date;

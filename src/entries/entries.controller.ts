@@ -3,6 +3,7 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Query,
   UseGuards,
@@ -12,6 +13,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from 'src/auth/get-user.decorator';
 import { User } from 'src/auth/user.entity';
 import { CreateEntryDto } from './dto/create-entry.dto';
+import { UpdateEntryStatusDto } from './dto/update-entry-status.dto';
 import { Entry } from './entries.entity';
 import { EntriesService } from './entries.service';
 
@@ -46,9 +48,15 @@ export class EntriesController {
     @Body() createEntryDto: CreateEntryDto,
     @GetUser() user: User,
   ): Promise<Entry> {
-    return this.entriesService.createEntry(
-      createEntryDto,
-      user,
-    );
+    return this.entriesService.createEntry(createEntryDto, user);
+  }
+
+  @Patch('/:id/status')
+  updateEntryStatus(
+    @Param('id') id: string,
+    @Body() updateEntryStatusDto: UpdateEntryStatusDto,
+  ): Promise<Entry> {
+    const { newEntryStatus } = updateEntryStatusDto;
+    return this.entriesService.updateEntryStatus(id, newEntryStatus);
   }
 }
