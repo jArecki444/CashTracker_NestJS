@@ -9,6 +9,7 @@ import { MailService } from 'src/mail/mail.service';
 import { newEntryAddedEmailTemplate } from 'src/mail/template/new-entry-added';
 import { In } from 'typeorm';
 import { CreateEntryDto } from './dto/create-entry.dto';
+import { GetEntriesDto } from './dto/get-entries.dto';
 import { Entry } from './entries.entity';
 import { EntriesRepository } from './entries.repository';
 import { EntryStatus } from './models/entry.status.enum';
@@ -25,8 +26,8 @@ export class EntriesService {
     @Inject(MailService) private mailService: MailService,
   ) {}
 
-  async getEntries(user: User): Promise<Entry[]> {
-    return this.entriesRepository.getAllUserEntries(user);
+  async getEntries(user: User, filterDto: GetEntriesDto): Promise<Entry[]> {
+    return this.entriesRepository.getUserEntries(user, filterDto);
   }
 
   async getEntryById(entryId: string): Promise<Entry> {
@@ -47,10 +48,7 @@ export class EntriesService {
   ): Promise<Entry> {
     const entry: Entry = await this.getEntryById(id);
 
-    return this.entriesRepository.updateEntryStatus(
-      entry,
-      newEntryStatus,
-    );
+    return this.entriesRepository.updateEntryStatus(entry, newEntryStatus);
   }
 
   async createEntry(

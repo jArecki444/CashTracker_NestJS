@@ -1,6 +1,5 @@
 import {
   Body,
-  Delete,
   Get,
   Param,
   Patch,
@@ -13,6 +12,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from 'src/auth/get-user.decorator';
 import { User } from 'src/auth/user.entity';
 import { CreateEntryDto } from './dto/create-entry.dto';
+import { GetEntriesDto } from './dto/get-entries.dto';
 import { UpdateEntryStatusDto } from './dto/update-entry-status.dto';
 import { Entry } from './entries.entity';
 import { EntriesService } from './entries.service';
@@ -31,8 +31,11 @@ export class EntriesController {
   }
 
   @Get()
-  getAllUserEntries(@GetUser() user: User): Promise<Entry[]> {
-    return this.entriesService.getEntries(user);
+  getAllUserEntries(
+    @Query() filterDto: GetEntriesDto,
+    @GetUser() user: User,
+  ): Promise<Entry[]> {
+    return this.entriesService.getEntries(user, filterDto);
   }
 
   // @Delete('/:id')

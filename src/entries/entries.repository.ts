@@ -2,16 +2,23 @@ import { User } from 'src/auth/user.entity';
 import { Expense } from 'src/expenses/expenses.entity';
 import { EntityRepository, Repository } from 'typeorm';
 import { CreateEntryDto } from './dto/create-entry.dto';
+import { GetEntriesDto } from './dto/get-entries.dto';
 import { Entry } from './entries.entity';
 import { EntryStatus } from './models/entry.status.enum';
 
 @EntityRepository(Entry)
 export class EntriesRepository extends Repository<Entry> {
-  async getAllUserEntries(user: User): Promise<Entry[]> {
+  async getUserEntries(user: User, filterDto: GetEntriesDto): Promise<Entry[]> {
     const query = this.createQueryBuilder('entry');
-    query.where({ createdBy: user });
+    query.where({ createdBy: user }).orWhere({ partner: user });
 
-    const entries = await query.getMany();
+    let entries = await query.getMany();
+
+    if (filterDto.status) {
+      entries = entries.filter(
+        (entry: Entry) => entry.status === filterDto.status,
+      );
+    }
     return entries;
   }
 
