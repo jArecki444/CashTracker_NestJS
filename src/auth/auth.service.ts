@@ -34,12 +34,12 @@ export class AuthService {
     const { email, password } = authCredentialsDto;
 
     const existingUser: User = await this.usersRepository.findOne({ email });
-    const { username, id } = existingUser;
 
     if (
       existingUser &&
       (await bcrypt.compare(password, existingUser.password))
     ) {
+      const { username, id } = existingUser;
       const payload: JwtPayload = { email };
       const accessToken: string = await this.jwtService.sign(payload);
       const loggedUserInfo: LoggedUserInfoDto = {

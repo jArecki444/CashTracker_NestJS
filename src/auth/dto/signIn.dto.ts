@@ -7,17 +7,17 @@ import {
 } from 'class-validator';
 
 export class SignInDto {
-  @IsEmail()
-  @MinLength(4)
-  @MaxLength(20)
+  // @IsEmail()
+  // @MinLength(4)
+  // @MaxLength(20)
   email: string;
 
-  @IsString()
-  @MinLength(8)
-  @MaxLength(32)
-  @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
-    message: 'password is to weak!',
-  })
+  // @IsString()
+  // @MinLength(8)
+  // @MaxLength(32)
+  // @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
+  //   message: 'USER_BAD_CREDENTIALS',
+  // })
   password: string;
 }
 
