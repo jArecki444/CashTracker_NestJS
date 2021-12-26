@@ -118,4 +118,8 @@ export class FriendInvitationsService {
 
     return availableToInvite;
   }
+
+  async getFriends(user: User): Promise<User[]> {
+    return await this.usersRepository.getUserFriends(user.id);
+  }
 }

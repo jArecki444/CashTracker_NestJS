@@ -22,6 +22,11 @@ import { FriendInvitationsService } from './friend-invitations.service';
 export class FriendInvitationsController {
   constructor(private friendInvitationsService: FriendInvitationsService) {}
 
+  @Get('/friends')
+  friends(@GetUser() user: User): Promise<User[]> {
+    return this.friendInvitationsService.getFriends(user);
+  }
+
   @Get('/received-invitations')
   getMyReceivedInvitations(@GetUser() user: User): Promise<Invitation[]> {
     return this.friendInvitationsService.getAllReceivedInvitations(user);

@@ -26,10 +26,6 @@ export class AuthService {
     return await this.usersRepository.findOne(user);
   }
 
-  async getFriends(id: string): Promise<User[]> {
-    return this.usersRepository.getUserFriends(id);
-  }
-
   async signIn(authCredentialsDto: SignInDto): Promise<LoggedUserInfoDto> {
     const { email, password } = authCredentialsDto;
 

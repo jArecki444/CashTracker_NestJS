@@ -1,4 +1,4 @@
-import { Body, Get, Param, Post } from '@nestjs/common';
+import { Body, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { Controller } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoggedUserInfoDto } from './dto/logged.userInfo.dto';
@@ -24,10 +24,5 @@ export class AuthController {
   @Get('/info')
   info(@GetUser() user: User): Promise<User> {
     return this.authService.getUserInfo(user);
-  }
-
-  @Get('/friends/:userId')
-  friends(@Param('userId') id: string): Promise<User[]> {
-    return this.authService.getFriends(id);
   }
 }
