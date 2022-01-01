@@ -7,6 +7,7 @@ import { InviteFriendDto } from './dto/invite-friend.dto';
 import { UsersRepository } from 'src/auth/users.repository';
 import { InvitationStatus } from './models/invitation-status.enum';
 import { GetAvailableUsersDto } from './dto/get-available-users.dto';
+import { FriendCategory, FriendCategoryWithData } from './models/friends-data';
 
 @Injectable()
 export class FriendInvitationsService {
@@ -121,5 +122,27 @@ export class FriendInvitationsService {
 
   async getFriends(user: User): Promise<User[]> {
     return await this.usersRepository.getUserFriends(user.id);
+  }
+  async getFriendsCategoriesWithData(user: User): Promise<FriendCategoryWithData[]> {
+      let categoriesWithUsers: FriendCategoryWithData[] = [];
+      const friends = {
+        categoryName: FriendCategory.FRIENDS,
+        users: await this.usersRepository.getUserFriends(user.id),
+      }
+      categoriesWithUsers.push(friends);
+
+      const sentInvitations: FriendCategoryWithData = {
+        categoryName: FriendCategory.SENT_INVITATIONS,
+        usersWithInvitationInfo: await this.friendInvitationsRepository.getAllUsersThatReceivedInvitationToUser(user)
+      }
+      categoriesWithUsers.push(sentInvitations);
+
+      const receivedInvitations = {
+        categoryName: FriendCategory.RECEIVED_INVITATIONS,
+        usersWithInvitationInfo: await this.friendInvitationsRepository.getAllUsersThatSentInvitationToUser(user)
+      }
+      categoriesWithUsers.push(receivedInvitations);
+      return categoriesWithUsers;
+    
   }
 }

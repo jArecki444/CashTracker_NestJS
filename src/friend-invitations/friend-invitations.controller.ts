@@ -16,11 +16,17 @@ import { InviteFriendDto } from './dto/invite-friend.dto';
 import { UpdateInvitationStatusDto } from './dto/update-invitation-status.dto';
 import { Invitation } from './friend-invitations.entity';
 import { FriendInvitationsService } from './friend-invitations.service';
+import { FriendCategoryWithData } from './models/friends-data';
 
 @Controller('friend-invitations')
 @UseGuards(AuthGuard())
 export class FriendInvitationsController {
   constructor(private friendInvitationsService: FriendInvitationsService) {}
+
+  @Get('/friends-data')
+  getCompleteFriendsData(@GetUser() user: User): Promise<FriendCategoryWithData[]> {
+    return this.friendInvitationsService.getFriendsCategoriesWithData(user);
+  }
 
   @Get('/friends')
   friends(@GetUser() user: User): Promise<User[]> {

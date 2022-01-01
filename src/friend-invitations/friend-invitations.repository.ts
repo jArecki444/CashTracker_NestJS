@@ -24,6 +24,35 @@ export class FriendInvitationsRepository extends Repository<Invitation> {
     return invitations;
   }
 
+  //get all users that sent invitation to user (RECEIVED INVITATIONS)
+  async getAllUsersThatSentInvitationToUser(
+    user: User,
+  ): Promise<{ user: User; invitationId: string }[]> {
+    const query = this.createQueryBuilder('invitation');
+    query
+      .where({ inviteTo: user, status: InvitationStatus.PENDING })
+      .leftJoinAndSelect('invitation.inviteFrom', 'username');
+    const invitations = await query.getMany();
+    const users = invitations.map((invitation) => ({
+      user: invitation.inviteFrom,
+      invitationId: invitation.id,
+    }));
+    return users;
+  }
+  //get all users that received invitation from user (SENT INVITATIONS)
+  async getAllUsersThatReceivedInvitationToUser(user: User): Promise<{ user: User; invitationId: string }[]> {
+    const query = this.createQueryBuilder('invitation');
+    query
+      .where({ inviteFrom: user, status: InvitationStatus.PENDING })
+      .leftJoinAndSelect('invitation.inviteTo', 'username');
+    const invitations = await query.getMany();
+    const users = invitations.map((invitation) => ({
+      user: invitation.inviteTo,
+      invitationId: invitation.id,
+    }));
+    return users;
+  }
+
   async sendInvitation(inviteFrom: User, inviteTo: User): Promise<Invitation> {
     const invitation: Invitation = this.create({
       inviteFrom,
