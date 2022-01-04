@@ -14,7 +14,7 @@ export class SignUpDto {
 
   @IsEmail()
   @MinLength(4)
-  @MaxLength(20)
+  @MaxLength(60)
   email: string;
 
   @IsString()
