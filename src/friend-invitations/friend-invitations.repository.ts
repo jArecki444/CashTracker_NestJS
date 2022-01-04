@@ -39,8 +39,10 @@ export class FriendInvitationsRepository extends Repository<Invitation> {
     }));
     return users;
   }
-  //get all users that received invitation from user (SENT INVITATIONS)
-  async getAllUsersThatReceivedInvitationToUser(user: User): Promise<{ user: User; invitationId: string }[]> {
+  //get all users that received invitation from user (SENT INVITATIONS) with invitationId
+  async getUsersWithInvitationIdsThatReceivedInvitationFromUser(
+    user: User,
+  ): Promise<{ user: User; invitationId: string }[]> {
     const query = this.createQueryBuilder('invitation');
     query
       .where({ inviteFrom: user, status: InvitationStatus.PENDING })
@@ -50,6 +52,18 @@ export class FriendInvitationsRepository extends Repository<Invitation> {
       user: invitation.inviteTo,
       invitationId: invitation.id,
     }));
+    return users;
+  }
+  //get all users that received invitation from user (SENT INVITATIONS)
+  async getAllUsersThatReceivedInvitationFromUser(user: User): Promise<User[]> {
+    const query = this.createQueryBuilder('invitation');
+    query
+      .where({ inviteFrom: user, status: InvitationStatus.PENDING })
+      .leftJoinAndSelect('invitation.inviteTo', 'username');
+    const invitations = await query.getMany();
+    const users: User[] = invitations.map((invitation) => (
+      invitation.inviteTo
+    ));
     return users;
   }
 

@@ -83,11 +83,23 @@ export class FriendInvitationsService {
   ): Promise<any> {
     let availableToInvite = [];
     const requestingUserId = requestingUser.id;
-    //Get all users
+    //Get all users that do not have received friend request from requesting user
     //Get user friends
     //Return users - friends
+
     const allUserWithDetails = await this.usersRepository.find();
-    const allUsers = allUserWithDetails.map((item) => ({
+
+    //get ids of users that received friend request from current user
+    const alreadyInvitedUsers =
+      await this.friendInvitationsRepository.getAllUsersThatReceivedInvitationFromUser(
+        requestingUser,
+      );
+
+    const allNotInvitedUsers = allUserWithDetails.filter(
+      (a) => !alreadyInvitedUsers.map((b) => b.id).includes(a.id),
+    );
+  
+    const allUsers = allNotInvitedUsers.map((item) => ({
       username: item.username,
       email: item.email,
       id: item.id,
@@ -106,6 +118,7 @@ export class FriendInvitationsService {
       availableToInvite = allUsers;
     }
 
+    //Remove current requesting user from array
     availableToInvite = availableToInvite.filter(
       (user) => user.id !== requestingUserId,
     );
@@ -123,26 +136,34 @@ export class FriendInvitationsService {
   async getFriends(user: User): Promise<User[]> {
     return await this.usersRepository.getUserFriends(user.id);
   }
-  async getFriendsCategoriesWithData(user: User): Promise<FriendCategoryWithData[]> {
-      let categoriesWithUsers: FriendCategoryWithData[] = [];
-      const friends = {
-        categoryName: FriendCategory.FRIENDS,
-        users: await this.usersRepository.getUserFriends(user.id),
-      }
-      categoriesWithUsers.push(friends);
 
-      const sentInvitations: FriendCategoryWithData = {
-        categoryName: FriendCategory.SENT_INVITATIONS,
-        usersWithInvitationInfo: await this.friendInvitationsRepository.getAllUsersThatReceivedInvitationToUser(user)
-      }
-      categoriesWithUsers.push(sentInvitations);
+  async getFriendsCategoriesWithData(
+    user: User,
+  ): Promise<FriendCategoryWithData[]> {
+    let categoriesWithUsers: FriendCategoryWithData[] = [];
+    const friends = {
+      categoryName: FriendCategory.FRIENDS,
+      users: await this.usersRepository.getUserFriends(user.id),
+    };
+    categoriesWithUsers.push(friends);
 
-      const receivedInvitations = {
-        categoryName: FriendCategory.RECEIVED_INVITATIONS,
-        usersWithInvitationInfo: await this.friendInvitationsRepository.getAllUsersThatSentInvitationToUser(user)
-      }
-      categoriesWithUsers.push(receivedInvitations);
-      return categoriesWithUsers;
-    
+    const sentInvitations: FriendCategoryWithData = {
+      categoryName: FriendCategory.SENT_INVITATIONS,
+      usersWithInvitationInfo:
+        await this.friendInvitationsRepository.getUsersWithInvitationIdsThatReceivedInvitationFromUser(
+          user,
+        ),
+    };
+    categoriesWithUsers.push(sentInvitations);
+
+    const receivedInvitations = {
+      categoryName: FriendCategory.RECEIVED_INVITATIONS,
+      usersWithInvitationInfo:
+        await this.friendInvitationsRepository.getAllUsersThatSentInvitationToUser(
+          user,
+        ),
+    };
+    categoriesWithUsers.push(receivedInvitations);
+    return categoriesWithUsers;
   }
 }
